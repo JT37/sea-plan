@@ -7,3 +7,4 @@
 - [Redis底层数据结构](Redis底层数据结构.md)
 - [Redis单线程](Redis单线程.md)
 - [Redis持久化机制](Redis持久化机制.md)
+- [Redis主从库同步数据](Redis主从库同步数据.md)
