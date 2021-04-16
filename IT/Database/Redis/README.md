@@ -10,3 +10,6 @@
 - [Redis主从库同步数据](Redis主从库同步数据.md)
 - [Redis哨兵机制](Redis哨兵机制.md)
 - [Redis Cluster切片集群](RedisCluster切片集群.md)
+- [Redis字符串结构](Redis字符串结构.md)
+- [Redis集合统计模式](Redis集合统计模式.md)
+
