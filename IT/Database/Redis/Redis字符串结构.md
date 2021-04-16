@@ -24,5 +24,15 @@
 - 另一方面，当保存的是字符串数据，并且字符串小于等于 `44` 字节时，`RedisObject` 中的元数据、指针和 `SDS` 是一块连续的内存区域，这样就可以避免内存碎片。这种布局方式也被称为 `embstr` 编码方式。
 - 当字符串大于 `44` 字节时，`SDS` 的数据量就开始变多了，`Redis` 就不再把 `SDS` 和 `RedisObject` 布局在一起了，而是会给 `SDS` 分配独立的空间，并用指针指向 `SDS` 结构。这种布局方式被称为 `raw` 编码模式。
 
-`int`、`embstr` 和 `raw` 这三种编码模式，示意图：
+### Redis 的三种编码模式：int、embstr、raw 
 ![RedisObject三种编码模式示意图](../../Picture/RedisObject三种编码模式示意图.jpeg)
+
+### Redis 的 dictEntry 结构体
+`Redis` 会使用一个全局哈希表保存所有键值对，哈希表的每一项是一个 `dictEntry` 的结构体，用来指向一个键值对。`dictEntry` 结构中有三个 8 字节的指针，分别指向 `key`、`value` 以及下一个 `dictEntry`，三个指针共 2`4 `字节，如下图所示：
+
+![Redis的dictEntry结构体](../../Picture/Redis的dictEntry结构体.jpeg)
+
+三个指针只有 `24` 字节，为什么会占用了 `32` 字节呢？这就要提到 `Redis` 使用的内存分配库 `jemalloc` 了。
+
+### Redis 使用的内存分配库 jemalloc
+`jemalloc` 在分配内存时，会根据我们申请的字节数 `N`，找一个比 `N` 大，但是最接近 `N` 的 `2` 的幂次数作为分配的空间，这样可以减少频繁分配的次数。
