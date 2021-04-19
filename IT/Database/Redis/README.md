@@ -12,4 +12,5 @@
 - [Redis Cluster切片集群](RedisCluster切片集群.md)
 - [Redis字符串结构](Redis字符串结构.md)
 - [Redis集合统计模式](Redis集合统计模式.md)
+- [Redis自定义数据类型](Redis自定义数据类型.md)
 
