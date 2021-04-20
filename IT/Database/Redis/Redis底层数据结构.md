@@ -61,7 +61,7 @@
 
 ![渐进式rehash](../../Picture/渐进式rehash.jpeg)
 
-
+除了 `crud` 时，`Redis` 还有一个定时脚本进行 `rehash`。
 ### Redis 对集合类型不同操作的复杂度
 
 #### 单元素操作是基础
