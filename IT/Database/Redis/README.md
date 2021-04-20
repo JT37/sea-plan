@@ -17,4 +17,5 @@
 - [Redis 集合统计及扩展类型](Redis集合统计及扩展类型.md)
 - [Redis 自定义数据类型](Redis自定义数据类型.md)
 - [Redis 保存时间序列数据](Redis保存时间序列数据.md)
+- [Redis 实现消息队列](Redis实现消息队列.md)
 
