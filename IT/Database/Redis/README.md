@@ -18,4 +18,10 @@
 - [Redis 自定义数据类型](Redis自定义数据类型.md)
 - [Redis 保存时间序列数据](Redis保存时间序列数据.md)
 - [Redis 实现消息队列](Redis实现消息队列.md)
-
+  
+## Redis 性能影响因素
+- [Redis 内部的阻塞式操作](Redis内部的阻塞式操作.md)
+- [CPU 核和 NUMA 架构的对 Redis 的影响](CPU核和NUMA架构的对Redis的影响.md)
+- [Redis 关键系统配置](Redis关键系统配置.md)
+- [Redis 内存碎片](Redis内存碎片.md)
+- [Redis 缓冲区](Redis缓冲区.md)
