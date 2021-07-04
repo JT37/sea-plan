@@ -25,3 +25,4 @@
 - [Redis 波动延迟](Redis波动延迟.md)
 - [Redis 内存碎片](Redis内存碎片.md)
 - [Redis 缓冲区](Redis缓冲区.md)
+- [Redis 旁路缓存](Redis旁路缓存.md)
