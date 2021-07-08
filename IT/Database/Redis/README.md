@@ -25,6 +25,6 @@
 - [Redis 波动延迟](Redis波动延迟.md)
 - [Redis 内存碎片](Redis内存碎片.md)
 - [Redis 缓冲区](Redis缓冲区.md)
-- [Redis缓存及替换策略](Redis缓存及替换策略.md)
+- [Redis 缓存及替换策略](Redis缓存及替换策略.md)
 - [Redis 缓存异常处理](Redis缓存异常处理.md)
-- 
+- [Redis 原子操作及分布式锁](Redis原子操作及分布式锁.md)
