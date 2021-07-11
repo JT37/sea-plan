@@ -29,3 +29,4 @@
 - [Redis 缓存异常处理](Redis缓存异常处理.md)
 - [Redis 原子操作及分布式锁](Redis原子操作及分布式锁.md)
 - [Redis 事务机制](Redis事务机制.md)
+- [Redis 主从同步及故障](Redis主从同步及故障.md)
