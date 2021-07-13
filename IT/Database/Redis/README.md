@@ -18,6 +18,7 @@
 - [Redis 自定义数据类型](Redis自定义数据类型.md)
 - [Redis 保存时间序列数据](Redis保存时间序列数据.md)
 - [Redis 实现消息队列](Redis实现消息队列.md)
+- [Redis 支撑秒杀场景实践](Redis支撑秒杀场景实践.md)
   
 ## Redis 性能影响因素
 - [Redis 内部的阻塞式操作](Redis内部的阻塞式操作.md)
@@ -29,4 +30,4 @@
 - [Redis 缓存异常处理](Redis缓存异常处理.md)
 - [Redis 原子操作及分布式锁](Redis原子操作及分布式锁.md)
 - [Redis 事务机制](Redis事务机制.md)
-- [Redis 主从同步及故障](Redis主从同步及故障.md)
+- [Redis 主从同步故障](Redis主从同步故障.md)
