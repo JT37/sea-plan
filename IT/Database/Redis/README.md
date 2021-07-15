@@ -11,6 +11,7 @@
 - [Redis 主从库同步数据](Redis主从库同步数据.md)
 - [Redis 哨兵机制](Redis哨兵机制.md)
 - [Redis Cluster切片集群](RedisCluster切片集群.md)
+- [Redis 6.0新特性](Redis6新特性.md)
 
 ## Redis 实践
 - [Redis 字符串结构实现](Redis字符串结构实现.md)
