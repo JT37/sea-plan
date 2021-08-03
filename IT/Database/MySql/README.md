@@ -3,4 +3,6 @@
 </h1>
 
 ## MySQL 基础
-- [MySQL 执行逻辑](MySQL执行逻辑.md)
+- [MySQL 查询流程](MySQL查询流程.md)
+- [MySQL 更新流程](MySQL更新流程.md)
+- 
