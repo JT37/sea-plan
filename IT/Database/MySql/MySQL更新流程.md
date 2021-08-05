@@ -109,3 +109,5 @@
 
 redo log 和 binlog 通过事务ID 对应。 
 ```
+
+todo:查询时怎么使用内存
