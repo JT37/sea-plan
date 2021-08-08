@@ -77,3 +77,5 @@ show variables like 'transaction_isolation';
 
 select * from information_schema.innodb_trx where TIME_TO_SEC(timediff(now(),trx_started))>60
 ```
+
+扩展：https://juejin.cn/post/6844903681196982285
