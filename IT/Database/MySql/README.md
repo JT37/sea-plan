@@ -9,3 +9,7 @@
 - [MySQL 索引](MySQL索引.md)
 - [MySQL 锁](MySQL锁.md)
 - [MySQL 事务隔离与锁](事务隔离与行锁.md)
+
+## MySQL 实践
+- [MySQL 索引选择](索引选择.md)
+- 
