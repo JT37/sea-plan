@@ -11,5 +11,5 @@
 - [MySQL 事务隔离与锁](事务隔离与行锁.md)
 
 ## MySQL 实践
-- [MySQL 索引选择](索引选择.md)
-- 
+- [MySQL 索引选择](MySQL索引选择.md)
+- [MySQL 优化器](MySQL 优化器.md)
