@@ -50,3 +50,39 @@
 ```
 
 `innodb_io_capacity` 设置的过少，会导致写入速度刷脏页变慢，就造成了脏页累积，影响了查询和更新性能。
+
+如果脏页刷太慢，首先是内存脏页太多，其次是 `redo log` 写满。
+
+`InnoDB` 的刷盘速度就是要参考这两个因素：一个是脏页比例，一个是 `redo log` 写盘速度。
+
+`InnoDB` 会根据这两个因素先单独算出两个数字。参数 `innodb_max_dirty_pages_pct` 是脏页比例上限，默认值是 `75%`。`InnoDB` 会根据当前的脏页比例，算出一个范围在 `0` 到 `100` 之间的数字。
+
+`InnoDB` 会在后台刷脏页，而刷脏页的过程是要将内存页写入磁盘。所以，无论是你的查询语句在需要内存的时候可能要求淘汰一个脏页，还是由于刷脏页的逻辑会占用 `IO` 资源并可能影响到了你的更新语句，都可能是造成你从业务端感知到 `MySQL`“抖”了一下的原因。
+
+要尽量避免这种情况，你就要合理地设置 `innodb_io_capacity` 的值，并且平时要多关注脏页比例，不要让它经常接近 `75%`。
+
+```
+脏页比例是通过 Innodb_buffer_pool_pages_dirty/Innodb_buffer_pool_pages_total 得到的，具体的命令参考下面的代码：
+
+mysql> select VARIABLE_VALUE into @a from global_status where VARIABLE_NAME = 'Innodb_buffer_pool_pages_dirty';
+select VARIABLE_VALUE into @b from global_status where VARIABLE_NAME = 'Innodb_buffer_pool_pages_total';
+select @a/@b;
+
+```
+#### 刷脏页连坐机制
+
+一旦一个查询请求需要在执行过程中先 `flush` 掉一个脏页时，这个查询就可能要比平时慢了。而 `MySQL` 中的一个机制，可能让你的查询会更慢：在准备刷一个脏页的时候，如果这个数据页旁边的数据页刚好是脏页，就会把这个“邻居”也带着一起刷掉；而且这个把“邻居”拖下水的逻辑还可以继续蔓延，也就是对于每个邻居数据页，如果跟它相邻的数据页也还是脏页的话，也会被放到一起刷。
+
+在 `InnoDB` 中，`innodb_flush_neighbors` 参数就是用来控制这个行为的，值为 `1` 的时候会有上述的“连坐”机制，值为 `0` 时表示不找邻居，自己刷自己的。
+
+找“邻居”这个优化在机械硬盘时代是很有意义的，可以减少很多随机 `IO`。机械硬盘的随机 `IOPS` 一般只有几百，相同的逻辑操作减少随机 `IO` 就意味着系统性能的大幅度提升。
+
+而如果使用的是 `SSD` 这类 `IOPS` 比较高的设备的话，我就建议你把 `innodb_flush_neighbors` 的值设置成 `0`。因为这时候 `IOPS` 往往不是瓶颈，而“只刷自己”，就能更快地执行完必要的刷脏页操作，减少 `SQL` 语句响应时间。
+
+在 `MySQL 8.0` 中，`innodb_flush_neighbors` 参数的默认值已经是 `0` 了。
+
+### 小结
+
+利用 `WAL` 技术，数据库将随机写转换成了顺序写，大大提升了数据库的性能。
+
+但是，由此也带来了内存脏页的问题。脏页会被后台线程自动 `flush`，也会由于数据页淘汰而触发 `flush`，而刷脏页的过程由于会占用资源，可能会让你的更新和查询语句的响应时间长一些。
