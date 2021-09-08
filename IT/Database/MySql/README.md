@@ -15,3 +15,4 @@
 - [MySQL 优化器](MySQL优化器.md)
 - [MySQL 字符串索引](MySQL字符串索引.md)
 - [MySQL 脏页处理](MySQL脏页处理.md)
+- [MySQL 重建表](MySQL重建表.md)
