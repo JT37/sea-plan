@@ -50,6 +50,7 @@ location /dlib {
 # The ngx_http_proxy_module module allows passing requests to another server.
 
 location / {
+    # 代理
     proxy_pass       http://localhost:8000;
     # 设置上游服务器获取，请求地址原 Host
     proxy_set_header Host      $host;
@@ -82,3 +83,7 @@ server {
 }
 ```
 
+### Nginx 界面化工具
+
+GoAcess
+https://goaccess.io/
