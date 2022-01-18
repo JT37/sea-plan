@@ -1,0 +1,65 @@
+## 分布式系统的可用性与扩展性
+- 高可用性
+  - 服务可用性：允许有节点停止服务
+  - 数据可用性：部分节点丢失，不会丢失数据
+- 可扩展性
+  - 请求量提升、数据的不断增长（将数据分不到所有节点上）
+
+## `ES` 的分布式架构
+### 好处
+- 存储的水平扩容
+- 提高系统的可用性，部分节点停止服务，整个集群的服务不受影响
+## 集群
+- 不同的集群通过不同的名字来区分，默认名字 『`elasticsearch`』
+- 通过配置文件修改，或者在命令行中 `-E cluster.name=geektime` 进行设定
+- 一个集群可以有一个或者多个节点
+## 节点
+- 节点是一个 `ES` 的实例
+  - 本质上就是一个 `JAVA` 进程
+  - 一台机器上可以运行多个 `ES` 进程，但是生产环境一般建议一台机器上只运行一个 `ES` 实例
+- 每一个节点都有名字，通过配置文件配置，或者启动时候 `—E node.name=node1` 指定
+- 每一个节点启动之后，会分配一个 `UID`，保存在 `data` 目录下
+
+### Master-eligible nodes 和 Master Node
+- 每个节点启动后，默认就是一个 `Master eligible` 节点
+  - 可以设置 `node.master:false` 禁止
+- `Master-eligible` 节点可以参加选主流程，成为 `Master` 节点
+- 当第一个节点启动时候，它会将自己选举成 `Master` 节点
+- 每个节点上都保存了集群的状态，只有 `Master` 节点才能修改集群的状态信息：
+  - 集群状态（`Cluster State`），维护了一个集群中必要的信息
+    - 所有节点信息
+    - 所有的索引和其相关的 `Mapping` 与 `Setting` 的信息
+    - 分片的路由信息
+  - 任意节点都能修改信息会导致数据的不一致性
+
+### Data node & Coordinating Node
+- `Data Node` 
+  - 可以保存数据的节点，叫做 `Data Node`。负责保存分片数据。在数据扩展上起到了至关重要的作用
+- `Coordinating Node`
+  - 负责接受 `Client` 的请求，将请求分发到合适的节点，最终把结果汇集到一起
+  - 每个节点默认都起到了 `Coordinating Node` 的职责
+
+### 其它的节点类型
+- `Hot & Warm Node`
+  - 不同硬件配置的 Data Node，用来实现 `Hot(高配机器存储热门数据) & Warm(低配机器存储冷门数据)` 架构，降低集群部署的成本
+- `Machine Learning Node`
+  - 负责跑 `机器学习的 Job`，用来做异常检测
+- `Tribe Node`
+  - (`5.3` 开始使用 `Cross Cluster Search`) `Tribe Node` 连接到不同的 `ES` 集群，并且支持将这些集群当成一个单独的集群处理
+
+### 配置节点类型
+- 开发环境中一个节点可以承担多重角色
+- 生产环境中，应该设置单一的角色的节点（`dedicated node`）
+
+|   节点类型   |   配置参数   |   默认值   |
+| ---- | ---- | ---- |
+|    master eligible  |  node.master    |   true   |
+|   data   |   node.data   |   true   |
+|   ingest   |   node.ingest   |  true    |
+|   coordinating only   |   无   |    每个节点默默认都是 coordinating 节点。设置其它类型全部为 false  |
+|   machine learning   |   node.ml   |   true(需要 enable x-pack)   |
+
+## 分片（Primary Shard & Replica Shard）
+
+
+
