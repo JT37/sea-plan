@@ -56,7 +56,7 @@
 |    master eligible  |  node.master    |   true   |
 |   data   |   node.data   |   true   |
 |   ingest   |   node.ingest   |  true    |
-|   coordinating only   |   无   |    每个节点默默认都是 coordinating 节点。设置其它类型全部为 false  |
+|   coordinating only   |   无   |    每个节点默认都是 coordinating 节点。设置其它类型全部为 false  |
 |   machine learning   |   node.ml   |   true(需要 enable x-pack)   |
 
 ## 分片（Primary Shard & Replica Shard）
@@ -80,3 +80,4 @@
 - `Green`：主分片与副本都正常分配
 - `Yellow`：主分片全部正常分配，有副本分片未能正常分配
 - `Red`：有主分片未能分配
+
