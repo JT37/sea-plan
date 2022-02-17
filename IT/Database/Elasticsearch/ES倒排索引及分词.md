@@ -1,6 +1,6 @@
-## 倒排索引
+# 倒排索引
 
-### 正排索引和倒排索引 
+## 正排索引和倒排索引
 
 ![ES正排和倒排](./images/ES正排和倒排.jpg)
 
@@ -15,8 +15,6 @@
       - 词频 `TF`，该单词在文档中出现的次数，用于相关性评分
       - 位置（`Position`），单词在文档中分词的位置。用于语句搜索（`phrase query`）
       - 偏移（`Offset`），记录单词的开始结束位置，实现高亮显示
-
-
 
 ![es倒排存储示例](./images/es倒排存储示例.jpg)
 
@@ -41,7 +39,7 @@
 - 分词器是专门处理分词的组件，Analyzer 由三部分组成
   - `Character Filters`：针对原始文本处理，例如去除 `html`
   - `Tokenizer`：按照规则切分为单词
-  -  `Token Filter`：将切分的单词进行加工，小写，删除 `stopwords`，增加同义词
+  - `Token Filter`：将切分的单词进行加工，小写，删除 `stopwords`，增加同义词
 - `ES` 的内置分词器
   - `Standard Analyzer`：默认分词器，按词切分，小写处理
   - `Simple Analyzer`：按照非字母切分（符号被过滤），小写处理
@@ -73,9 +71,7 @@
 
 ![使用analyzerAPI](./images/使用analyzerAPI.jpg)
 
-
-
-```
+```es
 #查看不同的analyzer的效果
 #standard
 GET _analyze
@@ -149,4 +145,3 @@ POST _analyze
 }
 
 ```
-
