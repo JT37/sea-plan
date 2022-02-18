@@ -1,4 +1,5 @@
-## 文档（Document）
+# 文档（Document）
+
 - `ES` 是面向文档的，文档是所有可搜索数据的最小单位
   - 日志文件中的日志项
   - 一本电影的具体信息 / 一张唱片的详细信息
@@ -14,7 +15,8 @@
   - 你可以自己指定 `ID`
   - 或者通过 `ES` 自动生成
   
-## 文档元数据
+# 文档元数据
+
 ![ES元数据示例](./images/ES元数据示例.jpg)
 
 - 元数据，用于标注文档的相关信息
@@ -26,7 +28,8 @@
   - `_version`：文档的版本信息
   - `_score`：相关性打分
 
-### 索引
+## 索引
+
 - `Index` 索引是文档的容器，是一类文档的结合
   - `Index` 体现了逻辑空间的概念：每个索引都有自己的 `Mapping` 定义，用于定义包含的文档的字段名和字段类型
   - `Shard` 体现了物理空间的概念：索引中的数据分散在 `Shard` 中
@@ -38,16 +41,19 @@
   - 动词：保存一个文档到 `ES` 的过程也叫索引 (`indexing`)
 - 名词：一个 `B` 树索引，一个倒排索引
 
-### Type
+## Type
+
 - 在 `7.0` 之前，一个 `Index` 可以设置多个 `Types`，可以说 `Index` 是 `db type` 是不同的`tables`，现在，一个 `Index` 只能有一个 `Type`
 - `6.0` 开始，Type 已经被 `Deprecated`。`7.0` 开始，一个索引只能创建一个 `Type - "_doc"`
 
-参考原因：https://www.elastic.co/guide/en/elasticsearch/reference/7.0/removal-of-types.html  
+参考原因：<https://www.elastic.co/guide/en/elasticsearch/reference/7.0/removal-of-types.html>  
 
-### ES 与 RDBMS 抽象与类比
+## ES 与 RDBMS 抽象与类比
+
 ![ES与RDBMS对比](./images/ES与RDBMS对比.jpg)
 
 ## REST API - 很容易被各种语言调用
+
 `kibana` 安装官方提供的测试数据（`Index`：`kibana_sample_data_ecommerce`）
 
 ```

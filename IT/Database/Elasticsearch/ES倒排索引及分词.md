@@ -59,6 +59,8 @@
 - 中文分词
   - `ICU Analyzer`
     - 需要安装插件：`Elasticsearch-plugin install analysis-icu`
+      - 进入 `docker` 容器：`docker exec -it f75a0632e9ccd129b47731c279b9b7587d0d3d5dc060187ba3e11eb2b04963a6 /bin/sh`
+      - 执行命令：`/usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu`
     - 提供了 `Unicode` 的支持，更好的支持亚洲语言
   - `IK`
     - 支持自定义词库，支持热更新分词字典

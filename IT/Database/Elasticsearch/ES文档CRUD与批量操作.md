@@ -1,4 +1,5 @@
-## 文档的 CRUD
+# 文档的 CRUD
+
 - `Type` 名，约定都用 `_doc`
 - `Create`：如果 `ID` 已经存在，会失败
 - `Index`：如果 `ID` 不存在，创建新的文档。否则，先删除现有的文档，再创建新的文档，版本会增加
@@ -6,12 +7,14 @@
 
 ![ES的CRUD介绍](./images/ES的CRUD介绍.jpg)
 
-### Create 一个文档
+## Create 一个文档
+
 - 文档自动生成文档 `ID` 和指定文档 `ID` 两种方式
   - 通过调用 `post /users/_doc` 系统会自动生成 `document id`
   - 使用 `HTTP PUT user/_create/1` 创建时，`URI` 中显示指定 `_create`，此时如果该 `id` 的文档已经存在，操作失败
 
-### Get 一个文档
+## Get 一个文档
+
 - 找到文档，返回 `HTTP 200`
   - 文档元信息
     - `_index` / `_type` /
@@ -19,16 +22,16 @@
     - _source 中默认包含了文档的所有原始信息
 - 找不到文档，返回 `HTTP 404`
 
-### Index 文档
+## Index 文档
+
 - `Index` 和 `Create` 不一样的地方：如果文档不存在，就索引新的文档。否则现有文档会被删除，新的文档被索引。版本信息会 `+1`
 
-### Update 文档
+## Update 文档
+
 - `Update` 方法不会删除原来的文档，而是实现真正的数据更新
 - `Post` 方法 / `Payload` 需要包含在 `doc` 中
 
-
-
-### Bulk API
+# Bulk API
 
 - 支持在一次 `API` 调用中，对不同的索引进行操作
 - 支持四种类型操作
@@ -46,7 +49,7 @@
 #create document. 自动生成 _id
 POST users/_doc
 {
-	"user" : "Mike",
+    "user" : "Mike",
     "post_date" : "2019-04-15T14:12:12",
     "message" : "trying out Kibana"
 }
@@ -202,8 +205,6 @@ DELETE test
 DELETE test2
 ```
 
-
-
-### 常见的错误返回
+# 常见的错误返回
 
 ![es常见错误返回](./images/es常见错误返回.jpg)
