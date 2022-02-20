@@ -56,7 +56,7 @@
 
 `kibana` 安装官方提供的测试数据（`Index`：`kibana_sample_data_ecommerce`）
 
-```
+```elasticsearch
 #查看索引相关信息
 GET kibana_sample_data_ecommerce
 
