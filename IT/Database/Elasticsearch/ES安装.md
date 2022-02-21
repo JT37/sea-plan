@@ -1,7 +1,7 @@
 
 # Docker 安装 ES 相关
 
-## docker-compose 安装
+## docker-compose 安装 es、kibana、cerebro
 
 - `install docker`：安装 `docker`，了解基本语法
 - `mkdir docker_es && cd docker_es`：新建配置文件所在文件夹并进入
@@ -107,3 +107,26 @@ networks:
     driver: bridge
 
 ```
+
+## mac 安装 logstash
+
+1. 官网下载
+<https://artifacts.elastic.co/downloads/logstash/logstash-7.1.0.tar.gz>
+
+2. 解压压缩包，命令处理
+
+```linux
+
+# 进入解压后目录，生成数据集放置的 doc 文件夹，并将 movies.csv 文件放入此目录
+cd logstash-7.1.0 && mkdir doc && cd doc
+
+# 进入 bin 目录，并将 logstash.conf 配置文件放入此目录
+cd logstash-7.1.0/bin
+
+# 执行命令导入数据，若失败则需要安装 java 环境
+sudo ./logstash -f logstash.conf
+
+```
+
+- [movies.csv](./images/movies.csv)
+- [logstash.conf](./images/logstash.conf)
