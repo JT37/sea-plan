@@ -12,6 +12,7 @@
 - 指定字段 vs 泛查询
   - q=title:2022 | q=2022
 - 
+
 ```curl
 curl -XGET "http://elasticsearch:9200/kibana_sample_data_ecommerce/_search?q=customer_first_name:Eddie"
 
@@ -21,20 +22,29 @@ GET kibana*/_search?q=customer_first_name:Eddie
 GET /_all/_search?q=customer_first_name:Eddie
 ```
 
-```
+```curl
 #基本查询
 GET /movies/_search?q=2012&df=title&sort=year:desc&from=0&size=10&timeout=1s
 
 #带profile
 GET /movies/_search?q=2012&df=title
 {
-	"profile":"true"
+  "profile":"true"
 }
-#不带profile，对比查询详情
+
+#泛查询，不带df，对比查询详情
 GET /movies/_search?q=2012
 {
-	"profile":"true"
+  "profile":"true"
 }
+
+#指定字段
+GET /movies/_search?q=title:2012&sort=year:desc&from=0&size=10&timeout=1s
+{
+  "profile":"true"
+}
+
+
 
 ```
 
