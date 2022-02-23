@@ -9,9 +9,38 @@
 - `sort` 排序，`from` 和 `size` 用于分页
 - `profile` 可以查看查询时是如何被执行的
 - `timeout` 查询超时时间
-- 指定字段 vs 泛查询
-  - q=title:2022 | q=2022
-- 
+- 指定字段 `vs` 泛查询
+  - `q=title:2022 | q=2022`
+- `Term vs Phrase`
+  - `Beautiful Mind` 等效于 `Beautiful OR Mind`
+  - `"Beautiful Mind"` 等效于 `Beautiful AND Mind`。`Phrase` 查询还要求前后顺序一致
+- 分组与引号
+  - `title:(Beautiful AND Mind)`
+  - `title:"Beautiful Mind"`
+- 布尔操作
+  - `AND/OR/NOT` 或者  `&&/||/!`
+  - `title:(matrix NOT reload)`
+- 分组操作
+  - `+` 表示 `must`
+  - `-` 表示 `must_not`
+  - title:(+matrix  -reload)
+- 范围操作
+  - 区间表示：`[]` 表示闭区间，`{}` 表示开区间
+    - `year:{2019 TO 2018}`
+    - `year:[* TO 2018]`
+  - 算数符号
+    - `year:>2010`
+    - `year:(>2010 && <=2018)`
+    - `year:(+>2010 +<=2018)`
+- 通配符查询（查询效率低，占用内存大，不建议使用）
+  - `?` 代表 `1` 个字符，`*` 号代表 `0` 或者多个字符
+    - `title:m?nd`
+    - `title:be*`
+- 正则表达
+  - `title:[bt]oy`
+- 模糊匹配与近似查询
+  - `title:beautifl~1`
+  - `title:"long rings"~2`
 
 ```curl
 curl -XGET "http://elasticsearch:9200/kibana_sample_data_ecommerce/_search?q=customer_first_name:Eddie"
@@ -23,6 +52,7 @@ GET /_all/_search?q=customer_first_name:Eddie
 ```
 
 ```curl
+
 #基本查询
 GET /movies/_search?q=2012&df=title&sort=year:desc&from=0&size=10&timeout=1s
 
@@ -32,7 +62,8 @@ GET /movies/_search?q=2012&df=title
   "profile":"true"
 }
 
-#泛查询，不带df，对比查询详情
+
+#泛查询，正对_all,所有字段
 GET /movies/_search?q=2012
 {
   "profile":"true"
@@ -43,6 +74,78 @@ GET /movies/_search?q=title:2012&sort=year:desc&from=0&size=10&timeout=1s
 {
   "profile":"true"
 }
+
+
+# 查找美丽心灵, Mind为泛查询
+GET /movies/_search?q=title:Beautiful Mind
+{
+  "profile":"true"
+}
+
+# 泛查询
+GET /movies/_search?q=title:2012
+{
+  "profile":"true"
+}
+
+#使用引号，Phrase查询
+GET /movies/_search?q=title:"Beautiful Mind"
+{
+  "profile":"true"
+}
+
+#分组，Bool查询
+GET /movies/_search?q=title:(Beautiful Mind)
+{
+  "profile":"true"
+}
+
+
+#布尔操作符
+# 查找美丽心灵
+GET /movies/_search?q=title:(Beautiful AND Mind)
+{
+  "profile":"true"
+}
+
+# 查找美丽心灵
+GET /movies/_search?q=title:(Beautiful NOT Mind)
+{
+  "profile":"true"
+}
+
+# 查找美丽心灵
+GET /movies/_search?q=title:(Beautiful %2BMind)
+{
+  "profile":"true"
+}
+
+
+#范围查询 ,区间写法
+GET /movies/_search?q=title:beautiful AND year:[2002 TO 2018%7D
+{
+  "profile":"true"
+}
+
+
+#通配符查询
+GET /movies/_search?q=title:b*
+{
+  "profile":"true"
+}
+
+#模糊匹配&近似度匹配
+# 参数范围只有 0，1，2
+GET /movies/_search?q=title:bsautifl~2
+{
+  "profile":"true"
+}
+
+GET /movies/_search?q=title:"Lord Rings"~2
+{
+  "profile":"true"
+}
+
 
 
 
