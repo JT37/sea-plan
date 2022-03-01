@@ -10,4 +10,5 @@
 
 ## ES 查询
 
-- [Search API](SearchAPI.md)
+- [ES 简单查询](ES简单查询.md)
+- [ES 复杂查询](ES复杂查询.md)

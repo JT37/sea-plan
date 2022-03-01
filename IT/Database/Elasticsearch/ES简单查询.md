@@ -1,4 +1,4 @@
-# Search API
+# ES 简单查询
 
 ## URI Search
 
@@ -146,14 +146,12 @@ GET /movies/_search?q=title:"Lord Rings"~2
   "profile":"true"
 }
 
-
-
-
 ```
 
 ## Request Body Search
 
 - 使用 `ES` 提供的，基于 `JSON` 格式的更加完备的 `Query Domain Specific Language (DSL)`
+- 将查询语句通过 `Http Request Body` 的形式发给 `ES`
 
 ```curl
 # 支持 Get 和 POST
@@ -162,10 +160,127 @@ curl -XGET "http://elasticsearch:9200/kibana_sample_data_ecommerce/_search" -H '
 #REQUEST Body
 POST kibana_sample_data_ecommerce/_search
 {
-	"profile": true,
-	"query": {
-		"match_all": {}
-	}
+  "profile": true,
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+### 分页
+
+- `From` 从 `0` 开始，默认返回 `10` 条结果
+- 获取靠后的翻页成本越高
+
+```curl
+POST /kibana_sample_data_ecommerce/_search
+{
+  "from":10,
+  "size":20,
+  "query":{
+    "match_all": {}
+  }
+}
+```
+
+### 排序
+
+- 最好在 数字型 和 日期型 的字段上排序
+- 因为对于多值类型或分析过的字段排序，系统会选一个值，无法得知该值
+
+```curl
+#对日期排序
+POST kibana_sample_data_ecommerce/_search
+{
+  "sort":[{"order_date":"desc"}],
+  "query":{
+    "match_all": {}
+  }
+
+}
+```
+
+### _source filtering
+
+- 如果 `_source` 没有存储，那就只返回匹配的文档的元数据
+- `_source` 支持使用通配符 `_source["name*"]`
+
+```curl
+#source filtering
+POST kibana_sample_data_ecommerce/_search
+{
+  "_source":["order_date"],
+  "query":{
+    "match_all": {}
+  }
+}
+```
+
+### 脚本字段
+
+```curl
+#脚本字段
+GET kibana_sample_data_ecommerce/_search
+{
+  "script_fields": {
+    "new_field": {
+      "script": {
+        "lang": "painless",
+        "source": "doc['order_date'].value+'hello'"
+      }
+    }
+  },
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+POST movies/_search
+{
+  "query": {
+    "match": {
+      "title": "last christmas"
+    }
+  }
+}
+
+POST movies/_search
+{
+  "query": {
+    "match": {
+      "title": {
+        "query": "last christmas",
+        "operator": "and"
+      }
+    }
+  }
+}
+
+POST movies/_search
+{
+  "query": {
+    "match_phrase": {
+      "title":{
+        "query": "one love"
+
+      }
+    }
+  }
+}
+
+# slop 能查到 one I Love, 中间隔一个词
+POST movies/_search
+{
+  "query": {
+    "match_phrase": {
+      "title":{
+        "query": "one love",
+        "slop": 1
+
+      }
+    }
+  }
 }
 ```
 
