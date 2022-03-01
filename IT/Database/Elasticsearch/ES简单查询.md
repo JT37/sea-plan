@@ -308,3 +308,8 @@ POST movies/_search
   - `Precision`（查准率）：尽可能返回较少的无关文档
   - `Recall`（查全率）：尽量返回较多的相关文档
   - `Ranking`：是否能够按照相关度进行排序
+
+## 相关阅读
+
+<https://www.elastic.co/guide/en/elasticsearch/reference/7.0/search-uri-request.html>
+<https://www.elastic.co/guide/en/elasticsearch/reference/7.0/search-search.html>
