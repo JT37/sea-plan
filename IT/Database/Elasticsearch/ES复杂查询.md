@@ -73,4 +73,30 @@ POST users/_search
   }
 }
 
+# 多fields
+GET /movies/_search
+{
+    "profile": true,
+    "query":{
+        "query_string":{
+            "fields":[
+            "title",
+                "year"
+            ],
+            "query": "2012"
+        }
+    }
+}
+
+GET /movies/_search
+{
+    "profile":true,
+    "query":{
+        "simple_query_string":{
+            "query":"Beautiful+mind",
+            "fields":["title"]
+        }
+    }
+}
+
 ```
