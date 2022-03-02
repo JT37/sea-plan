@@ -236,3 +236,211 @@ PUT dynamic_mapping_test/_doc/12
 
 DELETE dynamic_mapping_test
 ```
+
+### 相关阅读
+
+<https://www.elastic.co/guide/en/elasticsearch/reference/7.1/dynamic-mapping.html>
+
+## 显示 Mapping 与常见参数介绍
+
+### 自定义 Mapping 的一些建议
+
+- 可以参考 `API` 手册，纯手写
+- 为了减少输入的工作量，减少出错概率，可以依照一下步骤
+  - 创建一个临时的 `index`，写入一些样本数据
+  - 通过访问 `Mapping API` 获得该临时文件的动态 `Mapping` 定义
+  - 修改后用，使用该配置创建你的索引
+  - 删除临时索引
+
+### Index 控制当前字段是否被索引
+
+```curl
+# 默认为 true，如果设置成 false，该字段不可被搜索
+#设置 index 为 false
+DELETE users
+PUT users
+{
+    "mappings" : {
+      "properties" : {
+        "firstName" : {
+          "type" : "text"
+        },
+        "lastName" : {
+          "type" : "text"
+        },
+        "mobile" : {
+          "type" : "text",
+          "index": false
+          # "index_options": "offsets"
+        }
+      }
+    }
+}
+
+PUT users/_doc/1
+{
+  "firstName":"Ruan",
+  "lastName": "Yiming",
+  "mobile": "12345678"
+}
+
+POST /users/_search
+{
+  "query": {
+    "match": {
+      "mobile":"12345678"
+    }
+  }
+}
+
+```
+
+- 四种不同级别的 `Index Options` 配置，可以控制倒排索引记录的内容
+  - `docs： doc id`
+  - `freqs：doc id / term frequencies`
+  - `positions：doc id / term frequencies / term position`
+  - `offsets： doc id / term frequencies / term position / character offsets`
+- `Text` 类型默认记录 `postions`，其他默认为 `docs`
+- 记录内容越多，占用存储空间越大
+
+### null_value
+
+- 需要对 `Null` 实现搜索
+- 只有 `Keyword` 类型支持设置 `Null_value`
+
+```curl
+#设定Null_value
+
+DELETE users
+PUT users
+{
+    "mappings" : {
+      "properties" : {
+        "firstName" : {
+          "type" : "text"
+        },
+        "lastName" : {
+          "type" : "text"
+        },
+        "mobile" : {
+          "type" : "keyword",
+          "null_value": "NULL"
+        }
+
+      }
+    }
+}
+
+PUT users/_doc/1
+{
+  "firstName":"Zhang",
+  "lastName": "Allen",
+  "mobile": null
+}
+
+PUT users/_doc/2
+{
+  "firstName":"Zhang22",
+  "lastName": "Allen22"
+
+}
+
+GET users/_search
+{
+  "query": {
+    "match": {
+      "mobile":"NULL"
+    }
+  }
+
+}
+
+GET users/_doc/1
+GET users/_doc/2
+```
+
+### copy_to 设置
+
+- `_all` 在 `7` 中被 `copy_to` 所替代
+- 满足一些特定搜索需求
+- `copy_to` 将字段的数值拷贝到目标字段，实现类似 `_all` 的作用
+- `copy_to` 的目标字段不出现在 `_source` 中
+
+```curl
+#设置 Copy to
+DELETE users
+PUT users
+{
+  "mappings": {
+    "properties": {
+      "firstName":{
+        "type": "text",
+        "copy_to": "fullName"
+      },
+      "lastName":{
+        "type": "text",
+        "copy_to": "fullName"
+      }
+    }
+  }
+}
+PUT users/_doc/1
+{
+  "firstName":"Allen",
+  "lastName": "Zhang"
+}
+
+GET users/_search?q=fullName:(Allen Zhang)
+
+POST users/_search
+{
+  "query": {
+    "match": {
+       "fullName":{
+        "query": "Allen Zhang",
+        "operator": "and"
+      }
+    }
+  }
+}
+```
+
+### 数组类型
+
+- `ES` 中不提供专门的数组类型，但是任何字段，都可以包含多个相同类型的数值
+
+```curl
+DELETE users
+#数组类型
+PUT users/_doc/1
+{
+  "name":"onebird",
+  "interests":"reading"
+}
+
+POST users/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+PUT users/_doc/1
+{
+  "name":"twobirds",
+  "interests":["reading","music"]
+}
+
+POST users/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+GET users/_mapping
+```
+
+### 相关阅读
+
+<https://www.elastic.co/guide/en/elasticsearch/reference/7.1/mapping-params.html>
