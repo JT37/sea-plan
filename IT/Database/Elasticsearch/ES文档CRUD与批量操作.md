@@ -81,7 +81,7 @@ GET users/_doc/1
 
 PUT users/_doc/1
 {
-	"user" : "Mike"
+    "user" : "Mike"
 
 }
 
