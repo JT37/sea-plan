@@ -237,7 +237,7 @@ PUT dynamic_mapping_test/_doc/12
 DELETE dynamic_mapping_test
 ```
 
-### 相关阅读
+### 相关阅读：dynamic-mapping
 
 <https://www.elastic.co/guide/en/elasticsearch/reference/7.1/dynamic-mapping.html>
 
@@ -441,6 +441,51 @@ POST users/_search
 GET users/_mapping
 ```
 
-### 相关阅读
+### 相关阅读：mapping-params
 
 <https://www.elastic.co/guide/en/elasticsearch/reference/7.1/mapping-params.html>
+
+## 多字段特性及 Mapping 中配置自定义 Analyzer
+
+### 多字段特性
+
+- 名字要实现精确匹配
+  - 增加一个 `keyword` 字段
+- 使用不同的 `analyzer`
+  - 不同语言
+  - `pinyin` 字段的搜索
+  - 还支持为搜索和索引指定不同的 `analyzer`
+  
+### Exact Values vs Full Text
+
+- `Exact Values`：包括数字、日期、具体一个字符串
+  - `ES` 中的 `keyword`
+  - `ES` 为每一个字段创建一个倒排索引
+  - `Exact Value` 在索引时，不需要做特殊的分词处理
+
+- 全文本，非结构化的文本数据。`ES` 中的 `text`
+
+### 自定义分词
+
+当 `ES` 自带的分词器无法满足时，可以自定义分词器。通过自组合不同的组件实现
+
+#### Character Filters
+
+- 在 `Tokenizer` 之前对文本进行处理，例如增加删除及替换字符。可以配置多个 `Character Filters`。会影响 `Tokenizer` 的 `position` 和 `offset` 信息
+- 一些自带的 `Character Filters`
+  - `HTML strip`：去除 `html` 标签
+  - `Mapping`：字符串替换
+  - `Pattern replace`：正则匹配替换
+
+#### Tokenizer
+
+- 将原始的文本按照一定的规则，切分为词（`term or token`）
+- `ES` 内置的 `Toeknizers`
+  - `whitespace / standard / uax_url_email / pattern / keyword / path hierarchy`
+  - 可以用 `Java` 开发插件，实现自己的 `Tokenizer`
+
+#### Token Filters
+
+- 将 `Tokenizer` 输出的单词（`term`），进行增加、修改、删除
+- 自带的 `Token Filters`
+  - `Lowercase` / `stop` / `synonym （添加近义词)`
