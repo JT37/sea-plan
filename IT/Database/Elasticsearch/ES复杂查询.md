@@ -489,3 +489,200 @@ GET users/_mapping
 - 将 `Tokenizer` 输出的单词（`term`），进行增加、修改、删除
 - 自带的 `Token Filters`
   - `Lowercase` / `stop` / `synonym （添加近义词)`
+
+```
+PUT logs/_doc/1
+{"level":"DEBUG"}
+
+GET /logs/_mapping
+
+# 剥离 html 标签
+POST _analyze
+{
+  "tokenizer":"keyword",
+  "char_filter":["html_strip"],
+  "text": "<b>hello world</b>"
+}
+
+# 切分目录
+POST _analyze
+{
+  "tokenizer":"path_hierarchy",
+  "text":"/user/ymruan/a/b/c/d/e"
+}
+
+#使用char filter进行替换
+POST _analyze
+{
+  "tokenizer": "standard",
+  "char_filter": [
+      {
+        "type" : "mapping",
+        "mappings" : [ "- => _"]
+      }
+    ],
+  "text": "123-456, I-test! test-990 650-555-1234"
+}
+
+#char filter 替换表情符号
+POST _analyze
+{
+  "tokenizer": "standard",
+  "char_filter": [
+      {
+        "type" : "mapping",
+        "mappings" : [ ":) => happy", ":( => sad"]
+      }
+    ],
+    "text": ["I am felling :)", "Feeling :( today"]
+}
+
+# white space and snowball
+GET _analyze
+{
+  "tokenizer": "whitespace",
+  "filter": ["stop","snowball"],
+  "text": ["The gilrs in China are playing this game!"]
+}
+
+# whitespace与stop
+GET _analyze
+{
+  "tokenizer": "whitespace",
+  "filter": ["stop","snowball"],
+  "text": ["The rain in Spain falls mainly on the plain."]
+}
+
+#remove 加入lowercase后，The 被当成 stopword 删除
+GET _analyze
+{
+  "tokenizer": "whitespace",
+  "filter": ["lowercase","stop","snowball"],
+  "text": ["The gilrs in China are playing this game!"]
+}
+
+#正则表达式
+GET _analyze
+{
+  "tokenizer": "standard",
+  "char_filter": [
+      {
+        "type" : "pattern_replace",
+        "pattern" : "http://(.*)",
+        "replacement" : "$1"
+      }
+    ],
+    "text" : "http://www.elastic.co"
+}
+
+```
+
+## Index Template 和 Dynamic Template
+
+### Index Template
+
+- 帮助你设定 `Mappings` 和 `Settings`，并按照一定的规则，自动匹配到新创建的索引之上
+  - 模板仅在一个索引被创建时，才会产生作用。修改模板不会影响已创建的索引。
+  - 可以设定多个索引模板，这些设置会被 `“merge”` 在一起
+  - 可以指定 `“order”` 的数值，控制 `“merging”` 的过程
+
+- `Index Template` 的工作方式，当一个索引被创建时
+  - 应用 `ES` 默认的 `settings` 和 `mappings`
+  - 应用 `order` 数值低的 `Index Template` 中的设定
+  - 应用 `order` 高的 `Index Template` 中的设定，之前的设定会被覆盖
+  - 应用创建索引时，用户所指定的 `Settings` 和 `Mappings`，并覆盖之前模板中的设定
+
+```curl
+#数字字符串被映射成text，日期字符串被映射成日期
+PUT ttemplate/_doc/1
+{
+  "someNumber":"1",
+  "someDate":"2019/01/01"
+}
+GET ttemplate/_mapping
+
+
+#Create a default template
+PUT _template/template_default
+{
+  "index_patterns": ["*"],
+  "order" : 0,
+  "version": 1,
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas":1
+  }
+}
+
+PUT /_template/template_test
+{
+    "index_patterns" : ["test*"],
+    "order" : 1,
+    "settings" : {
+      "number_of_shards": 1,
+        "number_of_replicas" : 2
+    },
+    "mappings" : {
+      "date_detection": false,
+      "numeric_detection": true
+    }
+}
+
+#查看template信息
+GET /_template/template_default
+GET /_template/temp*
+
+
+#写入新的数据，index以test开头
+PUT testtemplate/_doc/1
+{
+  "someNumber":"1",
+  "someDate":"2019/01/01"
+}
+GET testtemplate/_mapping
+GET testtemplate/_settings
+
+# 重新设置，打开 date_detection，更改order
+PUT /_template/template_test_two
+{
+    "index_patterns" : ["test*"],
+    "order" : 2,
+    "settings" : {
+      "number_of_shards": 1,
+        "number_of_replicas" : 2
+    },
+    "mappings" : {
+      "date_detection": true,
+      "numeric_detection": true
+    }
+}
+PUT testtemplatetwo/_doc/1
+{
+  "someNumber":"1",
+  "someDate":"2019/01/01"
+}
+GET testtemplatetwo/_mapping
+
+
+PUT testmy
+{
+  "settings":{
+    "number_of_replicas":5
+  }
+}
+
+PUT testmy/_doc/1
+{
+  "key":"value"
+}
+
+GET testmy/_settings
+DELETE testmy
+DELETE testtemplate
+DELETE testtemplatetwo
+DELETE /_template/template_default
+DELETE /_template/template_test
+DELETE /_template/template_test_two
+```
+
+### Dynamic Template
