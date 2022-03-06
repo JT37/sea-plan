@@ -87,3 +87,7 @@ GET /_cat/indices/kibana*?pri&v&h=health,index,pri,rep,docs.count,mt
 GET /_cat/indices?v&h=i,tm&s=tm:desc
 
 ```
+
+### 相关阅读：聚合
+
+<https://www.elastic.co/guide/en/elasticsearch/reference/7.1/search-aggregations.html>

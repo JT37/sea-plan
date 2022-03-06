@@ -686,3 +686,186 @@ DELETE /_template/template_test_two
 ```
 
 ### Dynamic Template
+
+- 根据 `ES` 识别的数据类型，结合字段名称，来动态设定字段类型
+  - 所有的字符串类型都设定成 `keyword`，或者关闭 `keyword` 字段
+  - `is` 开头的字段都设置成 `boolean`
+  - `long_` 开头的都设置成 `long` 类型
+
+- `Dynamic Template` 是定义在某个索引的 `Mapping` 中
+- `Template` 有一个名称
+- 匹配规则是一个数组
+- 为匹配到字段设置 `Mapping`
+
+```curl
+#Dynaminc Mapping 根据类型和字段名
+DELETE my_index
+
+PUT my_index/_doc/1
+{
+  "firstName":"Ruan",
+  "isVIP":"true"
+}
+
+GET my_index/_mapping
+DELETE my_index
+PUT my_index
+{
+  "mappings": {
+    "dynamic_templates": [
+            {
+        "strings_as_boolean": {
+          "match_mapping_type":   "string",
+          "match":"is*",
+          "mapping": {
+            "type": "boolean"
+          }
+        }
+      },
+      {
+        "strings_as_keywords": {
+          "match_mapping_type":   "string",
+          "mapping": {
+            "type": "keyword"
+          }
+        }
+      }
+    ]
+  }
+}
+PUT my_index/_doc/1
+{
+  "firstName":"Ruan",
+  "isVIP":"true"
+}
+
+GET my_index/_mapping
+DELETE my_index
+
+
+DELETE my_index
+#结合路径
+PUT my_index
+{
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "full_name": {
+          "path_match":   "name.*",
+          "path_unmatch": "*.middle",
+          "mapping": {
+            "type":       "text",
+            "copy_to":    "full_name"
+          }
+        }
+      }
+    ]
+  }
+}
+GET my_index/_mapping
+
+PUT my_index/_doc/1
+{
+  "name": {
+    "first":  "John",
+    "middle": "Winston",
+    "last":   "Lennon"
+  }
+}
+
+GET my_index/_search?q=full_name:John
+GET my_index/_search?q=full_name:Winston
+GET my_index/_search?q=full_name:Lennon
+```
+
+## ES 聚合分析简介
+
+### 什么是聚合（Aggregation）
+
+- `ES` 除搜索以外，提供的针对 `ES` 数据进行统计分析的功能
+  - 实时性高
+  - `Hadoop (T+1)`
+- 通过聚合，我们会得到一个数据的概览，是分析和总结全套的数据，而不是寻找单个文档
+- 高性能，只需要一个语句，就可以从 `ES` 得到分析结果
+  - 无需在客户端自己去实现分析逻辑
+
+### 集合的分类
+
+- `Bucket Aggregation`：一些列满足特定条件的文档的集合
+  - 一组满足条件的文档，类似于 `SQL` 的 `Group By`
+- `Metric Aggregation`：一些数据运算，可以对文档进行统计分析
+  - 一些系列的统计方法，类似于 `SQL` 的 `Count`
+- `Pipeline Aggregation`：对其他的聚合结果进行二次聚合
+- `Matrix Aggregation`：支持对多个字段的操作并提供一个结果矩阵
+
+```curl
+#按照目的地进行分桶统计
+GET kibana_sample_data_flights/_search
+{
+    "size": 0,
+    "aggs":{
+    "flight_dest":{
+        "terms":{
+            "field":"DestCountry"
+        }
+    }
+}
+}
+
+#查看航班目的地的统计信息，增加平均，最高最低价格
+GET kibana_sample_data_flights/_search
+{
+    "size": 0,
+    "aggs":{
+    "flight_dest":{
+        "terms":{
+            "field":"DestCountry"
+        },
+        "aggs":{
+            "avg_price":{
+                "avg":{
+                    "field":"AvgTicketPrice"
+                }
+            },
+            "max_price":{
+                "max":{
+                    "field":"AvgTicketPrice"
+                }
+            },
+            "min_price":{
+                "min":{
+                    "field":"AvgTicketPrice"
+                }
+            }
+        }
+    }
+}
+}
+
+#价格统计信息+天气信息
+GET kibana_sample_data_flights/_search
+{
+    "size": 0,
+    "aggs":{
+    "flight_dest":{
+        "terms":{
+            "field":"DestCountry"
+        },
+        "aggs":{
+            "stats_price":{
+                "stats":{
+                    "field":"AvgTicketPrice"
+                }
+            },
+            "wather":{
+                "terms": {
+                    "field": "DestWeather",
+                        "size": 5
+                }
+            }
+
+        }
+    }
+}
+}
+```

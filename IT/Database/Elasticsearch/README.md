@@ -1,6 +1,6 @@
 # Elasticsearch
 
-## ES 基础
+## ES 基础知识
 
 - [ES 安装](ES安装.md)
 - [ES 索引、文档和REST API](ES索引文档和RESTAPI.md)
@@ -8,7 +8,11 @@
 - [ES 文档 CRUD 与批量操作](ES文档CRUD与批量操作.md)
 - [ES 倒排索引及分词](ES倒排索引及分词.md)
 
-## ES 查询
+## ES 查询入门
 
 - [ES 简单查询](ES简单查询.md)
 - [ES 复杂查询](ES复杂查询.md)
+
+## ES 深入搜索
+
+- [ES 基于词项和基于全文的搜索](ES基于词项和基于全文的搜索.md)

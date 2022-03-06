@@ -31,7 +31,7 @@
 - `Update` 方法不会删除原来的文档，而是实现真正的数据更新
 - `Post` 方法 / `Payload` 需要包含在 `doc` 中
 
-# Bulk API
+## Bulk API
 
 - 支持在一次 `API` 调用中，对不同的索引进行操作
 - 支持四种类型操作
@@ -82,7 +82,6 @@ GET users/_doc/1
 PUT users/_doc/1
 {
     "user" : "Mike"
-
 }
 
 
