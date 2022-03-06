@@ -204,6 +204,6 @@ DELETE test
 DELETE test2
 ```
 
-# 常见的错误返回
+## 常见的错误返回
 
 ![es常见错误返回](./images/es常见错误返回.jpg)
