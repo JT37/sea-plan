@@ -20,3 +20,4 @@
 - [ES Query&Filtering与多字符串多字段查询](ESQuery&Filtering与多字符串多字段查询.md)
 - [ES 单字符串多字段查询](ES单字符串多字段查询.md)
 - [ES 多语言及中文分词与检索](ES多语言及中文分词与检索.md)
+- [ES 使用Search Template和Index Alias查询](ES使用SearchTemplate和IndexAlias查询.md)
