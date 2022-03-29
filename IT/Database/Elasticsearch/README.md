@@ -22,3 +22,4 @@
 - [ES 多语言及中文分词与检索](ES多语言及中文分词与检索.md)
 - [ES 使用Search Template和Index Alias查询](ES使用SearchTemplate和IndexAlias查询.md)
 - [ES 综合排序：Function Score Query 优化算分](综合排序优化算分.md)
+- [ES Term&Phrase Suggester](Term&PhraseSuggester.md)
