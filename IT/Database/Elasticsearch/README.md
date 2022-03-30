@@ -24,3 +24,7 @@
 - [ES 综合排序：Function Score Query 优化算分](综合排序优化算分.md)
 - [ES Suggester API](SuggesterAPI.md)
 - [ES 自动补全与基于上下文的提示](自动补全与基于上下文的提示.md)
+
+## ES 分布式特性及分布式搜索的机制
+
+- [ES 集群分布式模及选主与脑裂问题](集群分布式模及选主与脑裂问题.md)
