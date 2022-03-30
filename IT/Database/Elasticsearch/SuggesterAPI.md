@@ -1,4 +1,4 @@
-# Term&Phrase Suggester
+# Suggester API
 
 ## ES Suggester API
 
@@ -184,3 +184,141 @@ POST /articles/_search
 }
 ```
 
+## 自动补全：The Completion Suggester
+
+- `Completion Suggester` 提供了 自动完成（`Auto Complete`）的功能，用户每输入一个字符，就需要即时发送一个查询请求到后端查找匹配项
+- 对性能要求比较苛刻。`ES` 采用了不同的数据结构，并非通过倒排索引来完成。而是将 `Analyze` 的数据编码成 `FST` 和索引一起存放。`FST` 会被 `ES` 整个加载进内存，速度很快
+- `FST` 只能用于前缀查找
+
+### 使用 Completion Suggester 的一些步骤
+
+- 定义 `Mapping`，使用 `“completion” type`
+- 索引数据
+- 运行 `suggest` 查询，得到搜索建议
+
+```curl
+DELETE articles
+PUT articles
+{
+  "mappings": {
+    "properties": {
+      "title_completion":{
+        "type": "completion"
+      }
+    }
+  }
+}
+
+POST articles/_bulk
+{ "index" : { } }
+{ "title_completion": "lucene is very cool"}
+{ "index" : { } }
+{ "title_completion": "Elasticsearch builds on top of lucene"}
+{ "index" : { } }
+{ "title_completion": "Elasticsearch rocks"}
+{ "index" : { } }
+{ "title_completion": "elastic is the company behind ELK stack"}
+{ "index" : { } }
+{ "title_completion": "Elk stack rocks"}
+{ "index" : {} }
+
+# prefix 切换值 el 、elk
+POST articles/_search?pretty
+{
+  "size": 0,
+  "suggest": {
+    "article-suggester": {
+      "prefix": "el ",
+      "completion": {
+        "field": "title_completion"
+      }
+    }
+  }
+}
+```
+
+## 基于上下文的提示：Context Suggester
+
+- 上下文感知
+- `Completion Suggester` 的扩展
+- 可以在搜索中加入更多的上下文信息，例如，输入“`star`”
+  - 咖啡相关：建议 “`starbucks`”
+  - 电影相关：建议 “`star wars`”
+
+### 实现 Context Suggester
+
+- 可以定义两种类型的 `Context`
+  - `Category`：任意的字符串
+  - `GEO`：地理位置信息
+- 实现 `Context Suggester` 的具体步骤
+  - 定制一个 `Mapping`
+  - 索引数据，并且为每个文档加入 `Context` 信息
+  - 结合 `Context` 进行 `Suggestion` 查询
+
+```curl
+DELETE comments
+PUT comments
+PUT comments/_mapping
+{
+  "properties": {
+    "comment_autocomplete":{
+      "type": "completion",
+      "contexts":[{
+        "type":"category",
+        "name":"comment_category"
+      }]
+    }
+  }
+}
+
+POST comments/_doc
+{
+  "comment":"I love the star war movies",
+  "comment_autocomplete":{
+    "input":["star wars"],
+    "contexts":{
+      "comment_category":"movies"
+    }
+  }
+}
+
+POST comments/_doc
+{
+  "comment":"Where can I find a Starbucks",
+  "comment_autocomplete":{
+    "input":["starbucks"],
+    "contexts":{
+      "comment_category":"coffee"
+    }
+  }
+}
+
+# 调整comment_category的值：coffee/movies，查看搜索结果
+POST comments/_search
+{
+  "suggest": {
+    "MY_SUGGESTION": {
+      "prefix": "sta",
+      "completion":{
+        "field":"comment_autocomplete",
+        "contexts":{
+          "comment_category":"coffee"
+        }
+      }
+    }
+  }
+}
+```
+
+## 精准度和召回率
+
+- 精准度
+  - `Completion > Phrase > Term`
+- 召回率
+  - `Term > Phrase > Completion`
+- 性能
+  - `Completion > Phrase > Term`
+
+## 官方文档
+
+<https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters.html>
