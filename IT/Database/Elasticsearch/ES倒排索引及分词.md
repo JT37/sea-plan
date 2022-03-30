@@ -64,10 +64,10 @@
     - 提供了 `Unicode` 的支持，更好的支持亚洲语言
   - `IK`
     - 支持自定义词库，支持热更新分词字典
-    - https://github.com/medcl/elasticsearch-analysis-ik
+    - <https://github.com/medcl/elasticsearch-analysis-ik>
   - `THULAC`
     - `THU Lexucal Analyzer for Chinese`，清华大学自然语言处理和社会人文计算实验室的一套中文分词器
-    - https://github.com/microbun/elasticsearch-thulac-plugin
+    - <https://github.com/microbun/elasticsearch-thulac-plugin>
 
 #### 使用 _analyzer API
 
