@@ -22,8 +22,7 @@
 - [ES 多语言及中文分词与检索](ES多语言及中文分词与检索.md)
 - [ES 使用Search Template和Index Alias查询](ES使用SearchTemplate和IndexAlias查询.md)
 - [ES 综合排序：Function Score Query 优化算分](综合排序优化算分.md)
-- [ES Suggester API](SuggesterAPI.md)
-- [ES 自动补全与基于上下文的提示](自动补全与基于上下文的提示.md)
+- [ES SuggesterAPI及自动补全与基于上下文的提示](SuggesterAPI.md)
 
 ## ES 分布式特性及分布式搜索的机制
 
